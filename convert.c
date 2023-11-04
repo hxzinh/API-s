@@ -15,6 +15,7 @@ int main() {
 	int fd = open("input.txt", O_RDONLY);
 	if(fd == -1) {
 		printf("Nothing to read! Please input something.");	
+		exit(0);
 	}
 	else {
 		s = (char*)malloc(10);
