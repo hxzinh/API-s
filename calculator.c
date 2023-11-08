@@ -2,37 +2,66 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <unistd.h>
+#include <fcntl.h>
 
-void calc_sum() {
-        long long a, b;
-        scanf("%lld %lld", &a, &b);
-        long long sum = a + b;
+const int SIZE = 20000;
+int *a;
 
-        printf("%lld\n", sum);
-}
+void get_sum() {
+        char filename[] = "input.txt";
+        char *a, *b;
+        FILE *file = fopen(filename, "r");
 
-void calc_sub() {
-        long long a, b;
-        scanf("%lld %lld", &a, &b);
-        long long sub = a - b;
+        if(file == NULL) {
+                printf("Error!");
+                return;
+        }
 
-        printf("%lld\n", sub);
-}
+        a = calloc(SIZE, sizeof(int));
 
-void calc_mul() {
-        int a, b;
-        scanf("%d %d", &a, &b);
-        long long res = 1LL * a * b;
+        char *line;
+        line = (char*)malloc(SIZE * sizeof(char));
+        while(fgets(line, SIZE * sizeof(char), file) != NULL) {
+                int len = strlen(line) - 1, carry = 0;
+                for(int i = 0; i < len; i++) {
+                        int u = a[SIZE - i - 1] + (int)(line[len - i - 1] - '0') + carry;
 
-        printf("%lld\n", res);
-}
+                        if(u > 10) {
+                                carry = 1;
+                                u -= 10;
+                        }
+                        else 
+                                carry = 0;
 
-void calc_div() {
-        double a, b;
-        scanf("%a %a", &a, &b);
+                        a[SIZE - i - 1] = u;
+                }
 
-        double res = a / b;
-        printf("%a\n", res);
+                int curId = len;
+                while(carry > 0) {
+                        int u = a[SIZE - curId - 1] + carry;
+                        if(u > 10) {
+                                carry = 1;
+                                u -= 10;
+                        }
+                                carry = 0;
+
+                        a[SIZE - curId - 1] = u;
+                        curId++;
+                }
+
+        }
+        free(line);
+
+        bool ok = false;
+        for(int i = 0; i < SIZE; i++) {
+                if(a[i] != 0) ok = true;
+                if(ok) printf("%d", a[i]);
+        }
+
+        free(a);
+
+        return;
 }
 
 int main() {
@@ -50,18 +79,11 @@ int main() {
                         if(++cnt == 4) return 0;
                 }
 
-                if(t == 1) calc_sum();
-                if(t == 2) calc_sub();
-                if(t == 3) calc_mul();
-                if(t == 4) calc_div();
-
-                char ok;
-                printf("Continue? Insert [Y/N] ");
-                scanf("%c", &ok);
-                if(ok != 'Y'&& ok != 'y') break;
+                get_sum();
+                break;
         }
 
-        //Em dang bi bug
+        //Em van dang bi bug
 
         return 0;
 }
