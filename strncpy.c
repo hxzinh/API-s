@@ -2,14 +2,14 @@
 #include <string.h>
 #include <stdlib.h>
 
-char* strncpy(char *restrict destination, char *restrict source, size_t n) {
-    size_t size = __strnlen(source, n);
-    /*
-    - Hàm strnlen trả về số bytes của *source kể cả '\0' nhưng max là n bytes
-    */
+
+char *strncpy_demo(char *destination, const char *source, size_t n) {
+    size_t size = strnlen(source, n);
+    //- Hàm strnlen trả về số bytes của *source kể cả '\0' nhưng max là n bytes
     if (size != n) memset (destination + size, '\0', n - size);
     return memcpy (destination, source, size);
 }
+
 /*
 - destination: con trỏ tới địa chỉ được copy tới
 - sources: con trỏ tới địa chỉ của ký tự đầu tiên của xâu được copy
@@ -22,5 +22,10 @@ char* strncpy(char *restrict destination, char *restrict source, size_t n) {
 */
 
 int main() {
+    char src[] = "This_is_a_simple_programme";
+    char dest[15] = "This_is_strncpy";
+    char buffer[6] = "Hxz1nh";
+    strncpy(dest, src, strlen(src) + 1);
+    printf("%s\n%s", dest, buffer);
     return 0;
 }
